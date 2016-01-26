@@ -16,5 +16,3 @@ class Hivebot
     @port ||= Serial.new(ARDUINO_SERIAL_PATH, 115200)
   end
 end
-
-Hivebot.new.run
