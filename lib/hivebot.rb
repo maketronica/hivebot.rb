@@ -3,16 +3,23 @@ require 'rubyserial'
 class Hivebot
   ARDUINO_SERIAL_PATH = Dir['/dev/serial/by-id/usb-Arduino*'].first
 
+  attr_reader :serializer
+
+  def initialize(serializer: Serial)
+    @serializer = serializer
+  end
+
   def run
-    while(true) do
-      data = port.read(1000);
-      puts data unless data.empty?
-    end
+    loop { read }
   end
 
   private
 
+  def read
+    port.read(1000);
+  end
+
   def port
-    @port ||= Serial.new(ARDUINO_SERIAL_PATH, 115200)
+    @port ||= serializer.new(ARDUINO_SERIAL_PATH, 115200)
   end
 end
