@@ -11,20 +11,27 @@ describe Hivebot do
     double('Serial', new: serial_connection)
   end
 
-  let(:hivebot) { Hivebot.new(serializer: serializer) }
+  let(:message_constructor) { double('Message') }
 
-  it 'has a serial path' do
-    expect(Hivebot::ARDUINO_SERIAL_PATH).to be_a(String)
+  let(:hivebot) do
+    Hivebot.new(serializer: serializer,
+                message_constructor: message_constructor)
+  end
+
+  before do
+    allow(Dir).to receive(:[]).and_return(['/path/to/serial/device'])
   end
 
   describe '#run' do
     before do
       allow(hivebot).to receive(:loop).and_yield
       allow(serial_connection).to receive(:read).and_return(data)
+      allow(message_constructor).to receive(:new).with(data)
     end
 
-    it 'reads one line from the connection' do
-      expect(hivebot.run).to eq(data)
+    it 'creates a message' do
+      expect(message_constructor).to receive(:new).with(data)
+      hivebot.run
     end
   end
 end

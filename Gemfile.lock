@@ -33,6 +33,3 @@ DEPENDENCIES
   rspec
   rubyserial
   simplecov
-
-BUNDLED WITH
-   1.10.6
