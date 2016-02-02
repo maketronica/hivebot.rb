@@ -15,8 +15,13 @@ class Hivebot
   private
 
   def read
+    full_data = ''
     data = port.read(1000);
-    message_constructor.new(data)
+    until(data == '')
+      full_data << data
+      data = port.read(1000);
+    end
+    message_constructor.new(full_data)
   end
 
   def port
