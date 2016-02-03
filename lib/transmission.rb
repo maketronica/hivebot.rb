@@ -1,7 +1,7 @@
 class Transmission
   attr_reader :message, :http_constructor, :configuration
 
-  def initialize(message: message,
+  def initialize(message:,
                  http_constructor: Net::HTTP,
                  configuration: Configuration.new)
     @message = message
