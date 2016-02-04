@@ -6,7 +6,7 @@ class Message
   end
 
   def to_h
-    Hash.new.tap do |hash|
+    {}.tap do |hash|
       body.split('&').each do |pair|
         k, v = pair.split('=')
         hash[k] = v

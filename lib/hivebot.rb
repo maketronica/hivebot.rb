@@ -20,28 +20,26 @@ class Hivebot
   private
 
   def process_next_message
-    next_message = get_next_message
-    if next_message.valid?
-      transmission_constructor.new(next_message).call
-    end
+    next_message = fetch_next_message!
+    transmission_constructor.new(next_message).call if next_message.valid?
   end
 
-  def get_next_message
+  def fetch_next_message!
     message_constructor.new(next_data)
   end
 
   def next_data
-    String.new.tap do |full_data|
-      data = port.read(1000);
-      until(data == '')
+    ''.tap do |full_data|
+      data = port.read(1000)
+      until data == ''
         full_data << data
-        data = port.read(1000);
+        data = port.read(1000)
       end
     end
   end
 
   def port
-    @port ||= serializer.new(serial_path, 115200)
+    @port ||= serializer.new(serial_path, 115_200)
   end
 
   def serial_path

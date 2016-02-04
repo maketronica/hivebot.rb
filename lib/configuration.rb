@@ -17,6 +17,6 @@ class Configuration
   private
 
   def settings
-    @settings ||= yaml_parser.load(file_reader.read("settings.yml"))
+    @settings ||= yaml_parser.load(file_reader.read('settings.yml'))
   end
 end

@@ -25,30 +25,34 @@ describe Hivebot do
     let(:transmission) { double('transmission') }
     before do
       allow(hivebot).to receive(:loop).and_yield
-      allow(message_constructor).to receive(:new)
-                                .with(data)
-                                .and_return(message)
-      allow(transmission_constructor).to receive(:new)
-                                     .with(message)
-                                     .and_return(transmission)
+      allow(message_constructor)
+        .to receive(:new)
+        .with(data)
+        .and_return(message)
+      allow(transmission_constructor)
+        .to receive(:new)
+        .with(message)
+        .and_return(transmission)
       allow(transmission).to receive(:call)
     end
 
     it 'creates a message' do
-      expect(message_constructor).to receive(:new)
-                                 .with(data)
-                                 .and_return(message)
+      expect(message_constructor)
+        .to receive(:new)
+        .with(data)
+        .and_return(message)
       hivebot.run
     end
 
     context 'when the data comes in very slowly' do
       before do
-        allow(serial_connection).to receive(:read)
-                                .and_return(*(data.chars) << '')
+        allow(serial_connection)
+          .to receive(:read)
+          .and_return(*data.chars << '')
       end
 
       it 'creates a message' do
-        expect(serial_connection).to receive(:read).exactly(data.length+1)
+        expect(serial_connection).to receive(:read).exactly(data.length + 1)
         expect(message_constructor).to receive(:new).with(data)
         hivebot.run
       end

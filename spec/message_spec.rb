@@ -11,7 +11,7 @@ describe Message do
 
   describe '#to_h' do
     it 'returns a correct hash' do
-      expect(message.to_h).to eq({'foo' => '1', 'bar' => '2', 'baz' => '3'})
+      expect(message.to_h).to eq('foo' => '1', 'bar' => '2', 'baz' => '3')
     end
   end
 

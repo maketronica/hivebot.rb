@@ -3,12 +3,11 @@ require 'configuration'
 
 describe Configuration do
   let(:file_reader) { double('File') }
-  let(:yaml) { <<EOS
+  let(:yaml) { <<EOS }
 mother:
   address: 1.2.3.4
   port: 4242
 EOS
- }
 
   let(:configuration) { Configuration.new(file_reader: file_reader) }
 

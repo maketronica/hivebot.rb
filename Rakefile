@@ -1,10 +1,15 @@
 require 'rspec/core/rake_task'
+require 'rubocop/rake_task'
 require './lib/hivebot'
 
-task :default => [:spec]
+task default: [:rubocop, :spec]
 
 task :run do
   Hivebot.new.run
+end
+
+task :rubocop do
+  RuboCop::RakeTask.new
 end
 
 task :spec do
