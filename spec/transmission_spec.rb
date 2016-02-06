@@ -45,8 +45,8 @@ describe Transmission do
             @attempts ||= 0
             @attempts += 1
             case @attempts
-            when 1 then fail Errno::EHOSTUNREACH
-            when 2 then fail Errno::ECONNREFUSED
+            when 1 then raise Errno::EHOSTUNREACH
+            when 2 then raise Errno::ECONNREFUSED
             else true
             end
           end
