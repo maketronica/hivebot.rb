@@ -10,7 +10,13 @@ class Transmission
   end
 
   def call
-    http_client.send_request('PUT', "readings/#{encoded_params}")
+    @start_time ||= Time.now
+    http_client.request_put('/', encoded_params)
+  rescue Errno::EHOSTUNREACH, Errno::ECONNREFUSED
+    wait_time = Time.now - @start_time
+    return false if wait_time > 30
+    sleep wait_time
+    call
   end
 
   private

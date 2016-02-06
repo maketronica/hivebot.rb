@@ -1,6 +1,6 @@
+require_relative 'config/environment.rb'
 require 'rspec/core/rake_task'
 require 'rubocop/rake_task'
-require './lib/hivebot'
 
 task default: [:rubocop, :spec]
 

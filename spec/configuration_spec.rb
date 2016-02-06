@@ -1,5 +1,4 @@
 require 'spec_helper'
-require 'configuration'
 
 describe Configuration do
   let(:file_reader) { double('File') }

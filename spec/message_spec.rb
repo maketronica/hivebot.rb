@@ -1,5 +1,4 @@
 require 'spec_helper'
-require 'message'
 
 describe Message do
   let(:data) { 'B|foo=1&bar=2&baz=3%079|E' }

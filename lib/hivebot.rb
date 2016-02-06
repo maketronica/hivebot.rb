@@ -1,7 +1,3 @@
-require 'rubyserial'
-require 'net/http'
-require 'yaml'
-
 class Hivebot
   attr_reader :serializer, :message_constructor, :transmission_constructor
 
@@ -21,7 +17,9 @@ class Hivebot
 
   def process_next_message
     next_message = fetch_next_message!
-    transmission_constructor.new(next_message).call if next_message.valid?
+    if next_message.valid?
+      transmission_constructor.new(message: next_message).call
+    end
   end
 
   def fetch_next_message!
@@ -29,13 +27,17 @@ class Hivebot
   end
 
   def next_data
-    ''.tap do |full_data|
-      data = port.read(1000)
-      until data == ''
-        full_data << data
-        data = port.read(1000)
-      end
+    ''.tap do |data|
+      data << port.read(100)
+      start = Time.now
+      data << port.read(100) until stop_reading?(data, start)
     end
+  end
+
+  def stop_reading?(data, start)
+    data == '' ||
+      message_constructor.new(data).valid? ||
+      (Time.now - start) >= 5
   end
 
   def port

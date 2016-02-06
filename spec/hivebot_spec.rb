@@ -1,8 +1,7 @@
 require 'spec_helper'
-require 'hivebot'
 
 describe Hivebot do
-  let(:data) { 'somekindadata' }
+  let(:data) { 'somekindadata!' }
   let(:serial_connection) { double('Serial') }
   let(:serializer) do
     double('Serial', new: serial_connection)
@@ -21,17 +20,22 @@ describe Hivebot do
   end
 
   describe '#run' do
-    let(:message) { double('message', valid?: true) }
+    let(:valid_message) { double('valid message', valid?: true) }
+    let(:invalid_message) { double('invalid message', valid?: false) }
     let(:transmission) { double('transmission') }
+
     before do
       allow(hivebot).to receive(:loop).and_yield
       allow(message_constructor)
         .to receive(:new)
+        .and_return(invalid_message)
+      allow(message_constructor)
+        .to receive(:new)
         .with(data)
-        .and_return(message)
+        .and_return(valid_message)
       allow(transmission_constructor)
         .to receive(:new)
-        .with(message)
+        .with(message: valid_message)
         .and_return(transmission)
       allow(transmission).to receive(:call)
     end
@@ -40,19 +44,36 @@ describe Hivebot do
       expect(message_constructor)
         .to receive(:new)
         .with(data)
-        .and_return(message)
+        .and_return(valid_message)
       hivebot.run
     end
 
-    context 'when the data comes in very slowly' do
+    context 'when there is no data' do
       before do
         allow(serial_connection)
           .to receive(:read)
-          .and_return(*data.chars << '')
+          .and_return('')
+      end
+      it 'gracefully waits' do
+        expect(serial_connection).to receive(:read).exactly(1)
+        expect(message_constructor).not_to receive(:new).with(data)
+        hivebot.run
+      end
+    end
+
+    context 'when the data comes in very slowly' do
+      let(:slow_data) { data.chars }
+      before do
+        10.times { slow_data.insert(rand(1..slow_data.size), '') }
+        allow(serial_connection)
+          .to receive(:read)
+          .and_return(*slow_data)
       end
 
       it 'creates a message' do
-        expect(serial_connection).to receive(:read).exactly(data.length + 1)
+        expect(serial_connection)
+          .to receive(:read)
+          .exactly(slow_data.index('!') + 1)
         expect(message_constructor).to receive(:new).with(data)
         hivebot.run
       end
@@ -66,10 +87,18 @@ describe Hivebot do
     end
 
     context 'when the message is invalid' do
-      let(:message) { double('message', valid?: false) }
+      before do
+        allow(message_constructor)
+          .to receive(:new)
+          .with(data)
+          .and_return(invalid_message)
+      end
+
       it 'does not transmit the message' do
-        expect(transmission).not_to receive(:call)
-        hivebot.run
+        Timecop.scale(10) do
+          expect(transmission).not_to receive(:call)
+          hivebot.run
+        end
       end
     end
   end

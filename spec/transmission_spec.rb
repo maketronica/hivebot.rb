@@ -1,5 +1,4 @@
 require 'spec_helper'
-require 'transmission'
 
 describe Transmission do
   let(:address) { '1.2.3.4' }
@@ -30,9 +29,55 @@ describe Transmission do
 
     it 'sends the transmission' do
       expect(http_client)
-        .to receive(:send_request)
-        .with('PUT', "readings/#{params}")
+        .to receive(:request_put)
+        .with('/', params)
       transmission.call
+    end
+
+    context 'there are http errors' do
+      before do
+        allow(transmission).to receive(:sleep) { sleep 0.01 }
+      end
+
+      context 'initially receive http errors, but eventually successfull' do
+        before do
+          allow(http_client).to receive(:request_put) do
+            @attempts ||= 0
+            @attempts += 1
+            case @attempts
+            when 1 then fail Errno::EHOSTUNREACH
+            when 2 then fail Errno::ECONNREFUSED
+            else true
+            end
+          end
+        end
+
+        it 'sends the transmission' do
+          expect(http_client)
+            .to receive(:request_put)
+            .with('/', params)
+            .exactly(3)
+          Timecop.scale(60) do
+            transmission.call
+          end
+        end
+      end
+
+      context 'connection fails for too long' do
+        before do
+          allow(http_client)
+            .to receive(:request_put)
+            .and_raise(Errno::EHOSTUNREACH)
+        end
+
+        it 'eventually gives up' do
+          Timeout.timeout(1) do
+            Timecop.scale(3600) do
+              expect(transmission.call).to be_falsey
+            end
+          end
+        end
+      end
     end
   end
 end
