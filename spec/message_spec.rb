@@ -1,7 +1,7 @@
 require 'spec_helper'
 
 describe Message do
-  let(:data) { 'B|foo=1&bar=2&baz=3%079|E' }
+  let(:data) { 'B|foo=1&bar=2&baz=3%79|E' }
   let(:message) { Message.new(data) }
 
   it 'instantiates' do

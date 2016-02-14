@@ -33,6 +33,6 @@ class Message
   end
 
   def matchdata
-    @matchdata ||= data.match(/B\|(.+)\%([0-9]{3})\|E/)
+    @matchdata ||= data.match(/B\|(.+)\%([0-9]{1,3})\|E/)
   end
 end
