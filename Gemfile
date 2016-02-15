@@ -1,5 +1,6 @@
 source 'https://rubygems.org'
 
+gem 'daemons'
 gem 'rake'
 gem 'rubyserial'
 
