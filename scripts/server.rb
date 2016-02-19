@@ -1,3 +1,4 @@
+ENV['HIVEBOT_ENV'] = 'production'
 require_relative '../config/environment.rb'
 begin
   HiveBot.logger.info('Starting up')
