@@ -4,6 +4,8 @@ gem 'daemons'
 gem 'rake'
 gem 'rubyserial'
 
+gem 'remote_syslog_logger'
+
 group :development do
   gem 'rubocop', require: false
 end

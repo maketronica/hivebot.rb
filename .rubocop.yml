@@ -3,3 +3,7 @@ AllCops:
 
 Documentation:
   Enabled: false
+
+Lint/RescueException:
+  Exclude:
+    - 'scripts/server.rb'

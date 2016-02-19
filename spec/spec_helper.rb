@@ -1,3 +1,4 @@
+ENV['HIVEBOT_ENV'] = 'test'
 require_relative '../config/environment.rb'
 require 'coveralls'
 require 'simplecov'
@@ -26,6 +27,15 @@ Timecop.safe_mode = true
 #
 # See http://rubydoc.info/gems/rspec-core/RSpec/Core/Configuration
 RSpec.configure do |config|
+  config.before(:suite) do
+    HiveBot.logger.level = Logger::DEBUG
+  end
+
+  config.around(:each) do |test|
+    HiveBot.logger.info('Running Test') { test.full_description }
+    test.run
+  end
+
   # rspec-expectations config goes here. You can use an alternate
   # assertion/expectation library such as wrong or the stdlib/minitest
   # assertions if you prefer.

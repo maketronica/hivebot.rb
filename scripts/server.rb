@@ -1,3 +1,12 @@
 require_relative '../config/environment.rb'
-Dir.chdir File.expand_path('../..', __FILE__)
-Hivebot.new.run
+begin
+  HiveBot.logger.info('Starting up')
+  Dir.chdir HiveBot.root
+  Hivebot.new.run
+rescue Exception => e
+  HiveBot.logger.fatal("Bot died with: #{e.message}")
+  HiveBot.logger.fatal(e.backtrace.inspect)
+  raise e
+ensure
+  HiveBot.logger.info('Shutting Down')
+end

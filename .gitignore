@@ -1,3 +1,5 @@
 coverage
 spec/examples.txt
 *.pid
+config/hivebot.rb
+log/*.log

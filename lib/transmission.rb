@@ -11,15 +11,27 @@ class Transmission
 
   def call
     @start_time ||= Time.now
+    HiveBot.logger.info(self.class) { "Sending: #{message.to_h}" }
     http_client.request_put('/', encoded_params)
-  rescue Errno::EHOSTUNREACH, Errno::ECONNREFUSED
-    wait_time = Time.now - @start_time
+  rescue Errno::EHOSTUNREACH, Errno::ECONNREFUSED => e
+    HiveBot.logger.error(self.class) { "Error Sending: #{e.message}" }
+    wait_and_try_again
+  end
+
+  private
+
+  def wait_and_try_again
     return false if wait_time > 30
+    HiveBot.logger.error(self.class) do
+      "Trying again in: #{wait_time} seconds"
+    end
     sleep wait_time
     call
   end
 
-  private
+  def wait_time
+    Time.now - @start_time
+  end
 
   def http_client
     http_constructor.new(

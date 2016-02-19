@@ -23,7 +23,9 @@ class Hivebot
   end
 
   def fetch_next_message!
-    message_constructor.new(next_data)
+    data = next_data
+    HiveBot.logger.info(self.class) { "Received Data: #{data}" }
+    message_constructor.new(data)
   end
 
   def next_data
