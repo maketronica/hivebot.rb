@@ -6,4 +6,4 @@ Documentation:
 
 Lint/RescueException:
   Exclude:
-    - 'scripts/server.rb'
+    - 'scripts/daemon.rb'
