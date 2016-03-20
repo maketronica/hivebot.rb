@@ -57,7 +57,7 @@ module HiveBot
         HiveBot.logger.error('No serial path available')
         sleep 60
       end
-      HiveBot.logger.error("Connecting to serial port: #{serial_path}")
+      HiveBot.logger.info("Connecting to serial port: #{serial_path}")
       serializer.new(serial_path, 115_200)
     end
 
