@@ -11,7 +11,10 @@ module HiveBot
     end
 
     def run
-      loop { process_next_message }
+      loop do
+        process_next_message
+        sleep 1
+      end
     end
 
     private
