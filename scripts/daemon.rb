@@ -5,8 +5,10 @@ begin
   Dir.chdir HiveBot.root
   HiveBot::Server.new.run
 rescue Exception => e
-  HiveBot.logger.fatal("Bot died with: #{e.message}")
-  HiveBot.logger.fatal(e.backtrace.inspect)
+  HiveBot.logger.fatal("Bot died with: #{e} : #{e.message}")
+  e.backtrash.each do |line|
+    HiveBot.logger.fatal(line)
+  end
   raise e
 ensure
   HiveBot.logger.info('Shutting Down')
