@@ -6,7 +6,7 @@ begin
   HiveBot::Server.new.run
 rescue Exception => e
   HiveBot.logger.fatal("Bot died with: #{e} : #{e.message}")
-  e.backtrash.each do |line|
+  e.backtrace.each do |line|
     HiveBot.logger.fatal(line)
   end
   raise e
