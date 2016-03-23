@@ -18,10 +18,15 @@ module HiveBot
   end
 
   def self.default_logger
-    Logger.new(default_log_file, 5, 1_024_000)
+    @default_logger ||= Logger.new(default_log_file, 5, 1_024_000)
   end
 
   def self.default_log_file
-    File.open(File.expand_path("#{root}/log/#{config.env}.log", __FILE__), 'a')
+    File.open(
+      File.expand_path("#{root}/log/#{config.env}.log", __FILE__),
+      'a'
+    ).tap do |file|
+      file.sync = true
+    end
   end
 end
