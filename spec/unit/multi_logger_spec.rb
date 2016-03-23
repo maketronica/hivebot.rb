@@ -28,7 +28,7 @@ module HiveBot
 
       context 'with a block' do
         before do
-          @block = Proc.new { 'bar' }
+          @block = proc { 'bar' }
         end
 
         it 'sends message to logger1' do

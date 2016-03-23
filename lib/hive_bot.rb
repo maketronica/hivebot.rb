@@ -18,7 +18,7 @@ module HiveBot
   end
 
   def self.default_logger
-    @default_logger ||= Logger.new(default_log_file, 5, 1_024_000)
+    Logger.new(default_log_file, 5, 1_024_000)
   end
 
   def self.default_log_file
