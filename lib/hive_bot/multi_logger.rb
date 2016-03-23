@@ -5,9 +5,9 @@ class MultiLogger
     @loggers = loggers
   end
 
-  def method_missing(method_name, *args)
+  def method_missing(method_name, *args, &block)
     loggers.each do |logger|
-      logger.send(method_name, *args)
+      logger.send(method_name, *args, &block)
     end
   end
 end

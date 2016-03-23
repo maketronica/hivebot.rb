@@ -25,6 +25,22 @@ module HiveBot
         expect(logger2).to receive(:error).with('foo')
         logger.error('foo')
       end
+
+      context 'with a block' do
+        before do
+          @block = Proc.new { 'bar' }
+        end
+
+        it 'sends message to logger1' do
+          expect(logger1).to receive(:error).with('foo', &@block)
+          logger.error('foo', &@block)
+        end
+
+        it 'sends message to logger2' do
+          expect(logger2).to receive(:error).with('foo', &@block)
+          logger.error('foo', &@block)
+        end
+      end
     end
   end
 end
