@@ -58,7 +58,20 @@ module HiveBot
         sleep 60
       end
       HiveBot.logger.info("Connecting to serial port: #{serial_path}")
-      serializer.new(serial_path, 115_200)
+      begin
+        serializer.new(serial_path, 115_200)
+      rescue Errno::ENODEV => e   
+        @enodev_counter ||= 0
+        @enodev_counter += 1
+        if @enodev_counter < 10
+          HiveBot.logger.error("Failed to connect to #{serial_path}. Trying again.")
+          sleep 10;
+          connect_to_serial_port
+        else
+          HiveBot.logger.error("Failed to connect to #{serial_path}. Giving up.")
+          raise e
+        end
+      end
     end
 
     def serial_path
