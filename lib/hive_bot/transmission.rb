@@ -15,7 +15,7 @@ module HiveBot
       HiveBot.logger.info(self.class) { "Sending: #{message.to_h}" }
       http_client.request_put('/', encoded_params)
     rescue Errno::EHOSTUNREACH, Errno::ECONNREFUSED, Errno::ENETUNREACH,
-             Errno::EINVAL, Errno::ETIMEDOUT, Net::ReadTimeout,  => e
+             Errno::EINVAL, Errno::ETIMEDOUT, Net::ReadTimeout => e
       HiveBot.logger.error(self.class) { "Error Sending: #{e} : #{e.class} :#{e.message}" }
       wait_and_try_again
     end
