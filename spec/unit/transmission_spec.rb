@@ -13,8 +13,7 @@ module HiveBot
     end
 
     before do
-      allow(HiveBot.config).to receive(:hivemom)
-                           .and_return(address: address, port: port)
+      HiveBot.config.hivemom = { address: address, port: port }
     end
 
     it 'instantiates' do
@@ -64,7 +63,7 @@ module HiveBot
             expect(http_client)
               .to receive(:request_put)
               .with('/', params)
-              .exactly(3)
+              .exactly(7)
             Timecop.scale(60) do
               transmission.call
             end
