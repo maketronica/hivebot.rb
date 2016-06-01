@@ -51,6 +51,10 @@ module HiveBot
               case @attempts
               when 1 then raise Errno::EHOSTUNREACH
               when 2 then raise Errno::ECONNREFUSED
+              when 3 then raise Errno::ENETUNREACH
+              when 4 then raise Errno::EINVAL
+              when 5 then raise Errno::ETIMEDOUT
+              when 6 then raise Net::ReadTimeout
               else true
               end
             end
