@@ -1,13 +1,11 @@
 module HiveBot
   class Transmission
-    attr_reader :message, :http_constructor, :configuration
+    attr_reader :message, :http_constructor
 
     def initialize(message:,
-                   http_constructor: Net::HTTP,
-                   configuration: Configuration.new)
+                   http_constructor: Net::HTTP)
       @message = message
       @http_constructor = http_constructor
-      @configuration = configuration
     end
 
     def call
@@ -37,8 +35,8 @@ module HiveBot
 
     def http_client
       http_constructor.new(
-        configuration.address,
-        configuration.port
+        HiveBot.config.hivemom[:address],
+        HiveBot.config.hivemom[:port]
       )
     end
 

@@ -8,4 +8,6 @@ module HiveBot
   # like the following, where <host> and XXXX are the name and port number
   # provided by papertrail.
   # config.logger = RemoteSyslogLogger.new('<host>.papertrailapp.com', XXXX, program: 'hivebot')
+  #
+  # config.hivemom = { address: '1.2.3.4', port: 8080 }
 end

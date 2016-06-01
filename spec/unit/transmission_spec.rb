@@ -7,11 +7,14 @@ module HiveBot
     let(:params) { 'foo=1&bar=2' }
     let(:message) { double('message', to_h: { foo: 1, bar: 2 }) }
     let(:http_constructor) { double('Net::HTTP') }
-    let(:configuration) { double('config', address: address, port: port) }
     let(:transmission) do
       Transmission.new(message: message,
-                       http_constructor: http_constructor,
-                       configuration: configuration)
+                       http_constructor: http_constructor)
+    end
+
+    before do
+      allow(HiveBot.config).to receive(:hivemom)
+                           .and_return({address: address, port: port})
     end
 
     it 'instantiates' do
