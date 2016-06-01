@@ -13,8 +13,8 @@ module HiveBot
       HiveBot.logger.info(self.class) { "Sending: #{message.to_h}" }
       http_client.request_put('/', encoded_params)
     rescue Errno::EHOSTUNREACH, Errno::ECONNREFUSED, Errno::ENETUNREACH,
-             Errno::EINVAL, Errno::ETIMEDOUT, Net::ReadTimeout => e
-      HiveBot.logger.error(self.class) { "Error Sending: #{e} : #{e.class} :#{e.message}" }
+           Errno::EINVAL, Errno::ETIMEDOUT, Net::ReadTimeout => e
+      log_error("Error Sending: #{e} : #{e.class} :#{e.message}")
       wait_and_try_again
     end
 
@@ -22,9 +22,7 @@ module HiveBot
 
     def wait_and_try_again
       return false if wait_time > 30
-      HiveBot.logger.error(self.class) do
-        "Trying again in: #{wait_time} seconds"
-      end
+      log_error("Trying again in: #{wait_time} seconds")
       sleep wait_time
       call
     end
@@ -42,6 +40,10 @@ module HiveBot
 
     def encoded_params
       URI.encode_www_form(message.to_h)
+    end
+
+    def log_error(text)
+      HiveBot.logger.error(self.class) { text }
     end
   end
 end

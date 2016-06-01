@@ -53,29 +53,41 @@ module HiveBot
     end
 
     def connect_to_serial_port
-      until serial_path
-        HiveBot.logger.error('No serial path available')
-        sleep 60
-      end
+      wait_for_serial_path
       HiveBot.logger.info("Connecting to serial port: #{serial_path}")
       begin
         serializer.new(serial_path, 115_200)
-      rescue Errno::ENODEV => e   
-        @enodev_counter ||= 0
-        @enodev_counter += 1
-        if @enodev_counter < 10
-          HiveBot.logger.error("Failed to connect to #{serial_path}. Trying again.")
-          sleep 10;
-          connect_to_serial_port
-        else
-          HiveBot.logger.error("Failed to connect to #{serial_path}. Giving up.")
-          raise e
-        end
+      rescue Errno::ENODEV => error
+        process_serial_path_rescue(error)
+      end
+    end
+
+    def wait_for_serial_path
+      until serial_path
+        log_error('No serial path available')
+        sleep 60
+      end
+    end
+
+    def process_serial_path_rescue(error)
+      @enodev_counter ||= 0
+      @enodev_counter += 1
+      if @enodev_counter < 10
+        log_error("Failed to connect to #{serial_path}. Trying again.")
+        sleep 10
+        connect_to_serial_port
+      else
+        log_error("Failed to connect to #{serial_path}. Giving up.")
+        raise error
       end
     end
 
     def serial_path
       Dir['/dev/serial/by-id/usb-Arduino*'].first
+    end
+
+    def log_error(text)
+      HiveBot.logger.error(self.class) { text }
     end
   end
 end

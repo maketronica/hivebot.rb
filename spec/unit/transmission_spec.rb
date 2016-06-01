@@ -14,7 +14,7 @@ module HiveBot
 
     before do
       allow(HiveBot.config).to receive(:hivemom)
-                           .and_return({address: address, port: port})
+                           .and_return(address: address, port: port)
     end
 
     it 'instantiates' do
